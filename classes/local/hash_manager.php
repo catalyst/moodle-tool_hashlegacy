@@ -23,6 +23,7 @@
  */
 
 namespace tool_hashlegacy\local;
+defined('MOODLE_INTERNAL') || die;
 
 class hash_manager {
 

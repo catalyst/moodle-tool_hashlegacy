@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- // Settings menu strings
 $string['pluginname'] = 'Legacy Hash Checker';
 $string['hashreport'] = 'Legacy hash report';
 $string['tablealgorithm'] = 'Algorithm';
