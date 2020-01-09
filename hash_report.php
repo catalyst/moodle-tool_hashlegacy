@@ -27,30 +27,25 @@ require_once($CFG->libdir.'/adminlib.php');
 
 admin_externalpage_setup('hashreport');
 $reset = optional_param('reset', '', PARAM_TEXT);
-
-if (!empty($reset)) {
-    \tool_hashlegacy\hash_manager::force_pw_change($reset);
-}
+$confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 $PAGE->set_title(get_string('hashreport', 'tool_hashlegacy'));
 $PAGE->set_heading(get_string('hashreport', 'tool_hashlegacy'));
 
-/*$form = new \tool_hashlegacy\form\hash_report();
-
-if ($form->is_cancelled()) {
-    redirect(new moodle_url('/admin/search.php'));
-} else if ($fromform = $form->get_data()) {
-    // No actions yet;
-}*/
-
 echo $OUTPUT->header();
-//echo $form->display();
-echo generate_table();
+if (!empty($reset) && $confirm && confirm_sesskey()) {
+    \tool_hashlegacy\hash_manager::force_pw_change($reset);
+} else if (!empty($reset) && !$confirm) {
+    $proceedurl = new moodle_url($PAGE->url, array('reset' => $reset, 'confirm' => 1, 'sesskey' => sesskey()));
+    echo $OUTPUT->confirm(get_string('confirmreset', 'tool_hashlegacy', $reset), $proceedurl, $PAGE->url);
+} else {
+    echo generate_table();
+}
 echo $OUTPUT->footer();
 
 
 function generate_table() {
-    global $DB;
+    global $DB, $OUTPUT, $PAGE;
     $table = new html_table();
     $table->head = array (
         get_string('tablealgorithm', 'tool_hashlegacy'),
@@ -75,7 +70,6 @@ function generate_table() {
     $hashtypes = $DB->get_records_sql($sql);
 
     foreach ($hashtypes as $type) {
-
         $actionurl = new moodle_url('/admin/tool/hashlegacy/hash_report.php', array('reset' => $type->algo));
         $link = html_writer::link($actionurl, get_string('reset'));
         $row = array(
