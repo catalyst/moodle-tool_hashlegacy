@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- *
+ *  Legacy Hash Checker lang strings.
  *
  * @package    tool_hashlegacy
  * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>
@@ -24,3 +24,4 @@
 
  // Settings menu strings
 $string['pluginname'] = 'Legacy Hash Checker';
+$string['hashreport'] = 'Legacy hash report';

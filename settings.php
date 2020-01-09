@@ -22,3 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die;
+
+$ADMIN->add('reports',
+    new admin_externalpage('hashreport', get_string('hashreport', 'tool_hashlegacy'),
+    new moodle_url('/admin/tool/hashlegacy/hash_report.php')));
