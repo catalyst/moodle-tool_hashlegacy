@@ -24,10 +24,20 @@
 
 namespace tool_hashlegacy;
 
+use html_writer;
+
 class hash_manager {
     public static function force_pw_change($algo) {
+        global $SESSION;
+        // Generate user list with that algorithm.
         $users = self::generate_user_list($algo);
-        var_dump($users);
+
+        // Store in session then redirect to the bulk action.
+        $SESSION->bulk_users = $users;
+        $bulkurl = new \moodle_url('/admin/user/user_bulk_forcepasswordchange.php',
+            array ('confirm' => 1, 'sesskey' => sesskey()));
+
+        redirect($bulkurl, 'test');
     }
 
     public static function generate_user_list($algo) {
@@ -50,6 +60,10 @@ class hash_manager {
                   FROM {user}
                  WHERE password like ?";
 
-        return $DB->get_records_sql($sql, array($match));
+        $users = $DB->get_records_sql($sql, array($match));
+
+        return array_map(function($userobject) {
+            return $userobject->id;
+        }, $users);
     }
 }

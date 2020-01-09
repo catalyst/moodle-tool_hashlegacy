@@ -35,16 +35,16 @@ if (!empty($reset)) {
 $PAGE->set_title(get_string('hashreport', 'tool_hashlegacy'));
 $PAGE->set_heading(get_string('hashreport', 'tool_hashlegacy'));
 
-$form = new \tool_hashlegacy\form\hash_report();
+/*$form = new \tool_hashlegacy\form\hash_report();
 
 if ($form->is_cancelled()) {
     redirect(new moodle_url('/admin/search.php'));
 } else if ($fromform = $form->get_data()) {
     // No actions yet;
-}
+}*/
 
 echo $OUTPUT->header();
-echo $form->display();
+//echo $form->display();
 echo generate_table();
 echo $OUTPUT->footer();
 
