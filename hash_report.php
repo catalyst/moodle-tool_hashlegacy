@@ -26,6 +26,11 @@ require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 admin_externalpage_setup('hashreport');
+$reset = optional_param('reset', '', PARAM_TEXT);
+
+if (!empty($reset)) {
+    \tool_hashlegacy\hash_manager::force_pw_change($reset);
+}
 
 $PAGE->set_title(get_string('hashreport', 'tool_hashlegacy'));
 $PAGE->set_heading(get_string('hashreport', 'tool_hashlegacy'));
@@ -55,9 +60,9 @@ function generate_table() {
 
     $sql = "SELECT count(*) cnt,
               CASE
-                WHEN password like '_2y_10_%' THEN 'brcypt blowfish - cost 10'
-                WHEN password like '_2y_04_%' THEN 'brcypt blowfish - cost 04'
-                WHEN password like '________________________________'  THEN 'md5 legacy'
+                WHEN password like '_2y_10_%' THEN 'bcrypt10'
+                WHEN password like '_2y_04_%' THEN 'bcrypt04'
+                WHEN password like '________________________________'  THEN 'md5'
                 WHEN password like 'restore%'   THEN password
                 WHEN password like 'not cache%' THEN password
                 ELSE password
@@ -69,12 +74,14 @@ function generate_table() {
           ORDER BY cnt DESC";
     $hashtypes = $DB->get_records_sql($sql);
 
-    $action;
-
     foreach ($hashtypes as $type) {
+
+        $actionurl = new moodle_url('/admin/tool/hashlegacy/hash_report.php', array('reset' => $type->algo));
+        $link = html_writer::link($actionurl, get_string('reset'));
         $row = array(
             $type->cnt,
-            $type->algo
+            $type->algo,
+            $link,
         );
         $table->data[] = $row;
     }

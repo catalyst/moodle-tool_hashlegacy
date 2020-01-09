@@ -25,7 +25,7 @@
 namespace tool_hashlegacy;
 
 class hash_manager {
-    public function force_pw_change($algo) {
+    public static function force_pw_change($algo) {
         $users = self::generate_user_list($algo);
         var_dump($users);
     }
