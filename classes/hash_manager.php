@@ -37,7 +37,7 @@ class hash_manager {
         $bulkurl = new \moodle_url('/admin/user/user_bulk_forcepasswordchange.php',
             array ('confirm' => 1, 'sesskey' => sesskey()));
 
-        redirect($bulkurl, 'test');
+        redirect($bulkurl);
     }
 
     public static function generate_user_list($algo) {
