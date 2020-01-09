@@ -57,9 +57,9 @@ function generate_table() {
 
     $sql = "SELECT count(*) cnt,
               CASE
-                WHEN password like '_2y_10_%' THEN 'bcrypt10'
-                WHEN password like '_2y_04_%' THEN 'bcrypt04'
-                WHEN password like '________________________________'  THEN 'md5'
+                WHEN password like :bc10_match THEN :bc10
+                WHEN password like :bc4_match THEN :bc4
+                WHEN password like :md5_match  THEN :md5
                 WHEN password like 'restore%'   THEN password
                 WHEN password like 'not cache%' THEN password
                 ELSE password
@@ -69,7 +69,14 @@ function generate_table() {
               FROM {user}
           GROUP BY algo
           ORDER BY cnt DESC";
-    $hashtypes = $DB->get_records_sql($sql);
+    $hashtypes = $DB->get_records_sql($sql, array (
+        'bc10_match' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT10_MATCH,
+        'bc10' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT10,
+        'bc4_match' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT4_MATCH,
+        'bc4' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT4,
+        'md5_match' => \tool_hashlegacy\hash_manager::ALGO_MD5_MATCH,
+        'md5' => \tool_hashlegacy\hash_manager::ALGO_MD5,
+    ));
 
     foreach ($hashtypes as $type) {
         $actionurl = new moodle_url('/admin/tool/hashlegacy/hash_report.php', array('reset' => $type->algo));

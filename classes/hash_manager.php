@@ -24,9 +24,16 @@
 
 namespace tool_hashlegacy;
 
-use html_writer;
-
 class hash_manager {
+
+    const ALGO_BCRYPT10 = 'bcrypt10';
+    const ALGO_BCRYPT4 = 'bcrypt4';
+    const ALGO_MD5 = 'md5';
+
+    const ALGO_BCRYPT10_MATCH = '_2y_10_%';
+    const ALGO_BCRYPT4_MATCH = '_2y_04_%';
+    const ALGO_MD5_MATCH = '________________________________';
+
     public static function force_pw_change($algo) {
         global $SESSION;
         // Generate user list with that algorithm.
@@ -43,16 +50,16 @@ class hash_manager {
     public static function generate_user_list($algo) {
         global $DB;
         switch ($algo) {
-            case 'bcrypt10':
-                $match = '_2y_10_%';
+            case self::ALGO_BCRYPT10:
+                $match = self::ALGO_BCRYPT10_MATCH;
                 break;
 
-            case 'bcrypt4':
-                $match = '_2y_04_%';
+            case self::ALGO_BCRYPT4:
+                $match = self::ALGO_BCRYPT4_MATCH;
                 break;
 
-            case 'md5':
-                $match = '________________________________';
+            case self::ALGO_MD5:
+                $match = self::ALGO_MD5_MATCH;
                 break;
         }
 
