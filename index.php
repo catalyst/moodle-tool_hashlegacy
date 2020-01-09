@@ -30,7 +30,7 @@ $reset = optional_param('reset', '', PARAM_TEXT);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
 
 if (!empty($reset) && $confirm && confirm_sesskey()) {
-    \tool_hashlegacy\hash_manager::force_pw_change($reset);
+    \tool_hashlegacy\local\hash_manager::force_pw_change($reset);
 }
 
 $PAGE->set_title(get_string('hashreport', 'tool_hashlegacy'));
@@ -49,6 +49,7 @@ echo $OUTPUT->footer();
 function generate_table() {
     global $DB;
     $table = new html_table();
+    $table->attributes['class'] = 'generaltable table table-bordered';
     $table->head = array (
         get_string('tablealgorithm', 'tool_hashlegacy'),
         get_string('count', 'tag'),
@@ -70,20 +71,20 @@ function generate_table() {
           GROUP BY algo
           ORDER BY cnt DESC";
     $hashtypes = $DB->get_records_sql($sql, array (
-        'bc10_match' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT10_MATCH,
-        'bc10' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT10,
-        'bc4_match' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT4_MATCH,
-        'bc4' => \tool_hashlegacy\hash_manager::ALGO_BCRYPT4,
-        'md5_match' => \tool_hashlegacy\hash_manager::ALGO_MD5_MATCH,
-        'md5' => \tool_hashlegacy\hash_manager::ALGO_MD5,
+        'bc10_match' => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT10_MATCH,
+        'bc10' => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT10,
+        'bc4_match' => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT4_MATCH,
+        'bc4' => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT4,
+        'md5_match' => \tool_hashlegacy\local\hash_manager::ALGO_MD5_MATCH,
+        'md5' => \tool_hashlegacy\local\hash_manager::ALGO_MD5,
     ));
 
     foreach ($hashtypes as $type) {
-        $actionurl = new moodle_url('/admin/tool/hashlegacy/hash_report.php', array('reset' => $type->algo));
-        $link = html_writer::link($actionurl, get_string('reset'));
+        $actionurl = new moodle_url('/admin/tool/hashlegacy/index.php', array('reset' => $type->algo));
+        $link = html_writer::link($actionurl, get_string('tableforcechange', 'tool_hashlegacy'));
         $row = array(
-            $type->cnt,
             $type->algo,
+            $type->cnt,
             $link,
         );
         $table->data[] = $row;

@@ -26,4 +26,5 @@
 $string['pluginname'] = 'Legacy Hash Checker';
 $string['hashreport'] = 'Legacy hash report';
 $string['tablealgorithm'] = 'Algorithm';
+$string['tableforcechange'] = 'Force Password Change';
 $string['confirmreset'] = 'Are you sure you wish to force password changes for all users with hash type \'{$a}\'?';

@@ -25,4 +25,4 @@ defined('MOODLE_INTERNAL') || die;
 
 $ADMIN->add('reports',
     new admin_externalpage('hashreport', get_string('hashreport', 'tool_hashlegacy'),
-    new moodle_url('/admin/tool/hashlegacy/hash_report.php')));
+    new moodle_url('/admin/tool/hashlegacy/index.php')));
