@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
+ *  Hash Manager Class
  *
  * @package     tool_hashlegacy
  * @author      Peter Burnett <peterburnett@catalyst-au.net>
@@ -21,14 +22,34 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_hashlegacy\form;
+namespace tool_hashlegacy;
 
-defined('MOODLE_INTERNAL') || die();
-require_once($CFG->libdir."/formslib.php");
+class hash_manager {
+    public function force_pw_change($algo) {
+        $users = self::generate_user_list($algo);
+        var_dump($users);
+    }
 
-class hash_report extends \moodleform {
-    public function definition() {
-        $mform = $this->_form;
-        $this->add_action_buttons();
+    public static function generate_user_list($algo) {
+        global $DB;
+        switch ($algo) {
+            case 'bcrypt10':
+                $match = '_2y_10_%';
+                break;
+
+            case 'bcrypt4':
+                $match = '_2y_04_%';
+                break;
+
+            case 'md5':
+                $match = '________________________________';
+                break;
+        }
+
+        $sql = "SELECT id
+                  FROM {user}
+                 WHERE password like ?";
+
+        return $DB->get_records_sql($sql, array($match));
     }
 }

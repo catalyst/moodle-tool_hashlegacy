@@ -25,3 +25,4 @@
  // Settings menu strings
 $string['pluginname'] = 'Legacy Hash Checker';
 $string['hashreport'] = 'Legacy hash report';
+$string['tablealgorithm'] = 'Algorithm';

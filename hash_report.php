@@ -40,4 +40,44 @@ if ($form->is_cancelled()) {
 
 echo $OUTPUT->header();
 echo $form->display();
+echo generate_table();
 echo $OUTPUT->footer();
+
+
+function generate_table() {
+    global $DB;
+    $table = new html_table();
+    $table->head = array (
+        get_string('tablealgorithm', 'tool_hashlegacy'),
+        get_string('count', 'tag'),
+        get_string('action')
+    );
+
+    $sql = "SELECT count(*) cnt,
+              CASE
+                WHEN password like '_2y_10_%' THEN 'brcypt blowfish - cost 10'
+                WHEN password like '_2y_04_%' THEN 'brcypt blowfish - cost 04'
+                WHEN password like '________________________________'  THEN 'md5 legacy'
+                WHEN password like 'restore%'   THEN password
+                WHEN password like 'not cache%' THEN password
+                ELSE password
+               END AS algo,
+                      max(timemodified) lastmod,
+                      to_timestamp(max(timemodified)) lastdate
+              FROM {user}
+          GROUP BY algo
+          ORDER BY cnt DESC";
+    $hashtypes = $DB->get_records_sql($sql);
+
+    $action;
+
+    foreach ($hashtypes as $type) {
+        $row = array(
+            $type->cnt,
+            $type->algo
+        );
+        $table->data[] = $row;
+    }
+
+    return html_writer::table($table);
+}
