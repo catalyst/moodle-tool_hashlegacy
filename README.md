@@ -15,7 +15,7 @@ A tool to check user password hash algorithms.
 What is this?
 -------------
 
-This is a tool that performs a simple report on the hash algorithm being used to store user passwords. Currently it has support for SHA-512, SHA-256, Bcrypt (blowfish) 10 Cost, Bcrypt (blowfist) 4 Cost (fast), and MD5. It shows counts of users using each algorithm type.
+This is a tool that performs a simple report on the hash algorithm being used to store user passwords. Currently it has support for SHA-512, SHA-256, Bcrypt (blowfish), and MD5. It shows counts of users using each algorithm type.
 
 It also allows for batch force password changes for anyone on a particular algorithm, by interfacing with the bulk user actions module. This will quickly allow for forcing all users on an insecure algorithm to have a new password generated on a secure algorithm.
 
