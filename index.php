@@ -56,15 +56,20 @@ function generate_table() {
         get_string('action')
     );
 
-    $sql = "SELECT count(*) cnt,
+    $sql = "SELECT
               CASE
                 WHEN password like :bc10_match THEN :bc10
                 WHEN password like :bc4_match THEN :bc4
                 WHEN password like :md5_match  THEN :md5
+                WHEN password like :sha256_match THEN :sha256
+                WHEN password like :sha256fast_match THEN :sha256fast
+                WHEN password like :sha512_match THEN :sha512
+                WHEN password like :sha512fast_match THEN :sha512fast
                 WHEN password like 'restore%'   THEN password
                 WHEN password like 'not cache%' THEN password
                 ELSE password
                END AS algo,
+                      count(*) cnt,
                       max(timemodified) lastmod,
                       to_timestamp(max(timemodified)) lastdate
               FROM {user}
@@ -77,6 +82,14 @@ function generate_table() {
         'bc4' => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT4,
         'md5_match' => \tool_hashlegacy\local\hash_manager::ALGO_MD5_MATCH,
         'md5' => \tool_hashlegacy\local\hash_manager::ALGO_MD5,
+        'sha256_match' => \tool_hashlegacy\local\hash_manager::ALGO_SHA256_MATCH,
+        'sha256' => \tool_hashlegacy\local\hash_manager::ALGO_SHA256,
+        'sha256fast_match' => \tool_hashlegacy\local\hash_manager::ALGO_SHA256FAST_MATCH,
+        'sha256fast' => \tool_hashlegacy\local\hash_manager::ALGO_SHA256FAST,
+        'sha512_match' => \tool_hashlegacy\local\hash_manager::ALGO_SHA512_MATCH,
+        'sha512' => \tool_hashlegacy\local\hash_manager::ALGO_SHA512,
+        'sha512fast_match' => \tool_hashlegacy\local\hash_manager::ALGO_SHA512FAST_MATCH,
+        'sha512fast' => \tool_hashlegacy\local\hash_manager::ALGO_SHA512FAST,
     ));
 
     foreach ($hashtypes as $type) {

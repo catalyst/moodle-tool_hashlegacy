@@ -30,10 +30,18 @@ class hash_manager {
     const ALGO_BCRYPT10 = 'bcrypt10';
     const ALGO_BCRYPT4 = 'bcrypt4';
     const ALGO_MD5 = 'md5';
+    const ALGO_SHA256 = 'sha256';
+    const ALGO_SHA256FAST = 'sha256fast';
+    const ALGO_SHA512 = 'sha512';
+    const ALGO_SHA512FAST = 'sha512fast';
 
     const ALGO_BCRYPT10_MATCH = '_2y_10_%';
     const ALGO_BCRYPT4_MATCH = '_2y_04_%';
     const ALGO_MD5_MATCH = '________________________________';
+    const ALGO_SHA256_MATCH = '_5_rounds=5000_%';
+    const ALGO_SHA256FAST_MATCH = '_5_rounds=1000_%';
+    const ALGO_SHA512_MATCH = '_6_rounds=5000_%';
+    const ALGO_SHA512FAST_MATCH = '_6_rounds=1000_%';
 
     public static function force_pw_change($algo) {
         global $SESSION;
@@ -61,6 +69,22 @@ class hash_manager {
 
             case self::ALGO_MD5:
                 $match = self::ALGO_MD5_MATCH;
+                break;
+
+            case self::ALGO_SHA256:
+                $match = self::ALGO_SHA256_MATCH;
+                break;
+
+            case self::ALGO_SHA256FAST:
+                $match = self::ALGO_SHA256FAST_MATCH;
+                break;
+
+            case self::ALGO_SHA512:
+                $match = self::ALGO_SHA512_MATCH;
+                break;
+
+            case self::ALGO_SHA512FAST:
+                $match = self::ALGO_SHA512FAST_MATCH;
                 break;
         }
 
