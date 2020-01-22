@@ -27,9 +27,8 @@ require_once($CFG->libdir.'/adminlib.php');
 
 admin_externalpage_setup('hashreport');
 $reset = optional_param('reset', '', PARAM_TEXT);
-$confirm = optional_param('confirm', 0, PARAM_BOOL);
 
-if (!empty($reset) && $confirm && confirm_sesskey()) {
+if (!empty($reset)) {
     \tool_hashlegacy\local\hash_manager::force_pw_change($reset);
 }
 
@@ -37,14 +36,8 @@ $PAGE->set_title(get_string('hashreport', 'tool_hashlegacy'));
 $PAGE->set_heading(get_string('hashreport', 'tool_hashlegacy'));
 
 echo $OUTPUT->header();
-if (!empty($reset) && !$confirm) {
-    $proceedurl = new moodle_url($PAGE->url, array('reset' => $reset, 'confirm' => 1, 'sesskey' => sesskey()));
-    echo $OUTPUT->confirm(get_string('confirmreset', 'tool_hashlegacy', $reset), $proceedurl, $PAGE->url);
-} else {
-    echo generate_table();
-}
+echo generate_table();
 echo $OUTPUT->footer();
-
 
 function generate_table() {
     global $DB;

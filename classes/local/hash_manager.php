@@ -50,8 +50,8 @@ class hash_manager {
 
         // Store in session then redirect to the bulk action.
         $SESSION->bulk_users = $users;
-        $bulkurl = new \moodle_url('/admin/user/user_bulk_forcepasswordchange.php',
-            array ('confirm' => 1, 'sesskey' => sesskey()));
+        $bulkurl = new \moodle_url('/admin/user/user_bulk.php',
+            array ('sesskey' => sesskey()));
 
         redirect($bulkurl);
     }
