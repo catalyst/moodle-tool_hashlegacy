@@ -22,7 +22,10 @@ It also allows for batch force password changes for anyone on a particular algor
 Branches
 --------
 
-For all Moodle versions, use the master branch.
+| Moodle verion     | Branch      | PHP  |
+| ----------------- | ----------- | ---- |
+| Moodle 3.5+       | master      | 7.0+ |
+
 
 Installation
 ------------
