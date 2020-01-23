@@ -70,7 +70,7 @@ function generate_table() {
                       min(timemodified) firstdate
               FROM {user}
           GROUP BY algo
-          ORDER BY cnt DESC";
+          ORDER BY lastdate DESC";
     $hashtypes = $DB->get_records_sql($sql, array (
         'bc10_match'        => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT10_MATCH,
         'bc10'              => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT10,
