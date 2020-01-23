@@ -13,21 +13,29 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- *  Legacy Hash Checker lang strings.
+ *  Privacy null provider.
  *
- * @package    tool_hashlegacy
- * @copyright  2020 Peter Burnett <peterburnett@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     tool_hashlegacy
+ * @author      Peter Burnett <peterburnett@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$string['pluginname'] = 'Legacy password hash tools';
-$string['hashreport'] = 'Legacy password hash report';
-$string['tablealgorithm'] = 'Algorithm';
-$string['tableforcechange'] = 'Bulk action';
-$string['recentlogin'] = 'Most recent login';
-$string['oldestlogin'] = 'Oldest login';
+namespace tool_hashlegacy\privacy;
+defined('MOODLE_INTERNAL') || die;
 
-// Privacy null provider.
-$string['privacy:metadata'] = 'The Legacy password hash tool does not store any user data.';
+class provider implements
+    // This plugin does not store any personal user data.
+    \core_privacy\local\metadata\null_provider {
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}
