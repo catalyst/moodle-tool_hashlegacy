@@ -46,6 +46,8 @@ function generate_table() {
     $table->head = array (
         get_string('tablealgorithm', 'tool_hashlegacy'),
         get_string('count', 'tag'),
+        get_string('recentlogin', 'tool_hashlegacy'),
+        get_string('oldestlogin', 'tool_hashlegacy'),
         get_string('action')
     );
 
@@ -64,7 +66,8 @@ function generate_table() {
                END AS algo,
                       count(*) cnt,
                       max(timemodified) lastmod,
-                      to_timestamp(max(timemodified)) lastdate
+                      max(timemodified) lastdate,
+                      min(timemodified) firstdate
               FROM {user}
           GROUP BY algo
           ORDER BY cnt DESC";
@@ -91,6 +94,8 @@ function generate_table() {
         $row = array(
             $type->algo,
             $type->cnt,
+            userdate($type->lastdate),
+            userdate($type->firstdate),
             $link,
         );
         $table->data[] = $row;

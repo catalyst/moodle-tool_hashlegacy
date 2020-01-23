@@ -26,3 +26,5 @@ $string['pluginname'] = 'Legacy password hash tools';
 $string['hashreport'] = 'Legacy password hash report';
 $string['tablealgorithm'] = 'Algorithm';
 $string['tableforcechange'] = 'Bulk action';
+$string['recentlogin'] = 'Most recent login';
+$string['oldestlogin'] = 'Oldest login';
