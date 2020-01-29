@@ -29,7 +29,8 @@ admin_externalpage_setup('hashreport');
 $reset = optional_param('reset', '', PARAM_TEXT);
 
 if (!empty($reset)) {
-    \tool_hashlegacy\local\hash_manager::force_pw_change($reset);
+    $algorithmarray = \tool_hashlegacy\local\hash_manager::ALGORITHMS[$reset];
+    \tool_hashlegacy\local\hash_manager::force_pw_change($algorithmarray);
 }
 
 $PAGE->set_title(get_string('hashreport', 'tool_hashlegacy'));
@@ -51,48 +52,44 @@ function generate_table() {
         get_string('action')
     );
 
-    $sql = "SELECT
-              CASE
-                WHEN password like :bc10_match          THEN :bc10
-                WHEN password like :bc4_match           THEN :bc4
-                WHEN password like :md5_match           THEN :md5
-                WHEN password like :sha256_match        THEN :sha256
-                WHEN password like :sha256fast_match    THEN :sha256fast
-                WHEN password like :sha512_match        THEN :sha512
-                WHEN password like :sha512fast_match    THEN :sha512fast
-                WHEN password like 'restore%'           THEN password
-                WHEN password like 'not cache%'         THEN password
-                ELSE password
-               END AS algo,
-                      count(*) cnt,
-                      max(timemodified) lastmod,
-                      max(timemodified) lastdate,
-                      min(timemodified) firstdate
-              FROM {user}
-          GROUP BY algo
-          ORDER BY lastdate DESC";
-    $hashtypes = $DB->get_records_sql($sql, array (
-        'bc10_match'        => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT10_MATCH,
-        'bc10'              => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT10,
-        'bc4_match'         => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT4_MATCH,
-        'bc4'               => \tool_hashlegacy\local\hash_manager::ALGO_BCRYPT4,
-        'md5_match'         => \tool_hashlegacy\local\hash_manager::ALGO_MD5_MATCH,
-        'md5'               => \tool_hashlegacy\local\hash_manager::ALGO_MD5,
-        'sha256_match'      => \tool_hashlegacy\local\hash_manager::ALGO_SHA256_MATCH,
-        'sha256'            => \tool_hashlegacy\local\hash_manager::ALGO_SHA256,
-        'sha256fast_match'  => \tool_hashlegacy\local\hash_manager::ALGO_SHA256FAST_MATCH,
-        'sha256fast'        => \tool_hashlegacy\local\hash_manager::ALGO_SHA256FAST,
-        'sha512_match'      => \tool_hashlegacy\local\hash_manager::ALGO_SHA512_MATCH,
-        'sha512'            => \tool_hashlegacy\local\hash_manager::ALGO_SHA512,
-        'sha512fast_match'  => \tool_hashlegacy\local\hash_manager::ALGO_SHA512FAST_MATCH,
-        'sha512fast'        => \tool_hashlegacy\local\hash_manager::ALGO_SHA512FAST,
-    ));
+    // Construct switch query from algorithm params.
+    $startfrag = "SELECT CASE ";
+    $select = '';
+    $params = array();
+    foreach (\tool_hashlegacy\local\hash_manager::ALGORITHMS as $algo) {
+        $match = $algo['match'];
+        $name = $algo['name'];
+        $matchname = $name . '_match';
+
+        // Check for empty special case.
+        if ($algo['name'] === 'empty') {
+            $select .= "WHEN password IS NULL THEN :{$name} ";
+            $params = array_merge($params, array($name => $name));
+            continue;
+        }
+
+        $select .= "WHEN password like :{$matchname} THEN :{$name} ";
+        $params = array_merge($params, array($matchname => $match, $name => $name));
+    }
+    $endfrag = "ELSE password
+                END AS algo,
+                       count(*) cnt,
+                       max(timemodified) lastmod,
+                       max(timemodified) lastdate,
+                       min(timemodified) firstdate
+               FROM {user}
+           GROUP BY algo
+           ORDER BY lastdate DESC";
+    $sql = $startfrag . $select . $endfrag;
+    $hashtypes = $DB->get_records_sql($sql, $params);
 
     foreach ($hashtypes as $type) {
         $actionurl = new moodle_url('/admin/tool/hashlegacy/index.php', array('reset' => $type->algo));
         $link = html_writer::link($actionurl, get_string('tableforcechange', 'tool_hashlegacy'));
+        $displayname = \tool_hashlegacy\local\hash_manager::ALGORITHMS[$type->algo]['displayname'];
+
         $row = array(
-            $type->algo,
+            $displayname,
             $type->cnt,
             userdate($type->lastdate),
             userdate($type->firstdate),

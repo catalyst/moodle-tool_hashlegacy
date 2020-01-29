@@ -27,26 +27,83 @@ defined('MOODLE_INTERNAL') || die;
 
 class hash_manager {
 
-    const ALGO_BCRYPT10 = 'bcrypt10';
-    const ALGO_BCRYPT4 = 'bcrypt4';
-    const ALGO_MD5 = 'md5';
-    const ALGO_SHA256 = 'sha256';
-    const ALGO_SHA256FAST = 'sha256fast';
-    const ALGO_SHA512 = 'sha512';
-    const ALGO_SHA512FAST = 'sha512fast';
-
-    const ALGO_BCRYPT10_MATCH = '_2y_10_%';
-    const ALGO_BCRYPT4_MATCH = '_2y_04_%';
-    const ALGO_MD5_MATCH = '________________________________';
-    const ALGO_SHA256_MATCH = '_5_rounds=5000_%';
-    const ALGO_SHA256FAST_MATCH = '_5_rounds=1000_%';
-    const ALGO_SHA512_MATCH = '_6_rounds=5000_%';
-    const ALGO_SHA512FAST_MATCH = '_6_rounds=1000_%';
+    const ALGORITHMS = array(
+        'blowfish10' => array (
+            'displayname' => 'BLOWFISH cost 10',
+            'name' => 'blowfish10',
+            'match' => '_2y_10_%',
+            'prefix' => '_2y_',
+            'suffix' => '_%'
+        ),
+        'blowfish04' => array (
+            'displayname' => 'BLOWFISH cost 04',
+            'name' => 'blowfish04',
+            'match' => '_2y_04_%',
+            'prefix' => '_2y_',
+            'suffix' => '_%'
+        ),
+        'md5' => array (
+            'displayname' => 'MD5',
+            'name' => 'md5',
+            'match' => '________________________________',
+            'prefix' => '',
+            'suffix' => ''
+        ),
+        'sha256' => array (
+            'displayname' => 'SHA256',
+            'name' => 'sha256',
+            'match' => '_5_rounds=5000_%',
+            'prefix' => '_5_rounds=',
+            'suffix' => '_%'
+        ),
+        'sha256fast' => array (
+            'displayname' => 'SHA256 1000 rounds',
+            'name' => 'sha256fast',
+            'match' => '_5_rounds=1000_%',
+            'prefix' => '_5_rounds=',
+            'suffix' => '_%'
+        ),
+        'sha512' => array (
+            'displayname' => 'SHA512',
+            'name' => 'sha512',
+            'match' => '_6_rounds=5000_%',
+            'prefix' => '_6_rounds=',
+            'suffix' => '_%'
+        ),
+        'sha512fast' => array (
+            'displayname' => 'SHA512 1000 rounds',
+            'name' => 'sha512fast',
+            'match' => '_6_rounds=1000_%',
+            'prefix' => '_6_rounds=',
+            'suffix' => '_%'
+        ),
+        'restored' => array (
+            'displayname' => 'Restored Hash',
+            'name' => 'restored',
+            'match' => 'restore%',
+            'prefix' => '',
+            'suffix' => ''
+        ),
+        'notcached' => array (
+            'displayname' => 'Not Cached',
+            'name' => 'notcached',
+            'match' => 'not cache%',
+            'prefix' => '',
+            'suffix' => '',
+        ),
+        'empty' => array (
+            'displayname' => 'Empty Hash',
+            'name' => 'empty',
+            'match' => '',
+            'prefix' => '',
+            'suffix' => ''
+        )
+    );
 
     public static function force_pw_change($algo) {
         global $SESSION;
         // Generate user list with that algorithm.
-        $users = self::generate_user_list($algo);
+        $users = self::generate_user_list($algo['match']);
 
         // Store in session then redirect to the bulk action.
         $SESSION->bulk_users = $users;
@@ -56,43 +113,14 @@ class hash_manager {
         redirect($bulkurl);
     }
 
-    public static function generate_user_list($algo) {
+    public static function generate_user_list($algomatch) {
         global $DB;
-        switch ($algo) {
-            case self::ALGO_BCRYPT10:
-                $match = self::ALGO_BCRYPT10_MATCH;
-                break;
-
-            case self::ALGO_BCRYPT4:
-                $match = self::ALGO_BCRYPT4_MATCH;
-                break;
-
-            case self::ALGO_MD5:
-                $match = self::ALGO_MD5_MATCH;
-                break;
-
-            case self::ALGO_SHA256:
-                $match = self::ALGO_SHA256_MATCH;
-                break;
-
-            case self::ALGO_SHA256FAST:
-                $match = self::ALGO_SHA256FAST_MATCH;
-                break;
-
-            case self::ALGO_SHA512:
-                $match = self::ALGO_SHA512_MATCH;
-                break;
-
-            case self::ALGO_SHA512FAST:
-                $match = self::ALGO_SHA512FAST_MATCH;
-                break;
-        }
 
         $sql = "SELECT id
                   FROM {user}
                  WHERE password like ?";
 
-        $users = $DB->get_records_sql($sql, array($match));
+        $users = $DB->get_records_sql($sql, array($algomatch));
 
         return array_map(function($userobject) {
             return $userobject->id;
