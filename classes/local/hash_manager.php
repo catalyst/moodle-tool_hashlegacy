@@ -97,6 +97,13 @@ class hash_manager {
             'match' => '',
             'prefix' => '',
             'suffix' => ''
+        ),
+        'generated' => array (
+            'displayname' => 'To be generated',
+            'name' => 'generated',
+            'match' => 'to be generate%',
+            'prefix' => '',
+            'suffix' => ''
         )
     );
 

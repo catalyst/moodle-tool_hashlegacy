@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 /**
- * Reporting page for each factor vs auth type
+ * Page showing information on each algorithm in the database
  *
  * @package   tool_hashlegacy
  * @author    Peter Burnett <peterburnett@catalyst-au.net>
@@ -47,8 +47,8 @@ function generate_table() {
     $table->head = array (
         get_string('tablealgorithm', 'tool_hashlegacy'),
         get_string('count', 'tag'),
-        get_string('recentlogin', 'tool_hashlegacy'),
         get_string('oldestlogin', 'tool_hashlegacy'),
+        get_string('recentlogin', 'tool_hashlegacy'),
         get_string('action')
     );
 
@@ -63,7 +63,7 @@ function generate_table() {
 
         // Check for empty special case.
         if ($algo['name'] === 'empty') {
-            $select .= "WHEN password IS NULL THEN :{$name} ";
+            $select .= "WHEN password='' THEN :{$name} ";
             $params = array_merge($params, array($name => $name));
             continue;
         }
@@ -74,9 +74,8 @@ function generate_table() {
     $endfrag = "ELSE password
                 END AS algo,
                        count(*) cnt,
-                       max(timemodified) lastmod,
-                       max(timemodified) lastdate,
-                       min(timemodified) firstdate
+                       max(lastlogin) lastdate,
+                       min(NULLIF(lastlogin, 0)) firstdate
                FROM {user}
            GROUP BY algo
            ORDER BY lastdate DESC";
@@ -87,12 +86,12 @@ function generate_table() {
         $actionurl = new moodle_url('/admin/tool/hashlegacy/index.php', array('reset' => $type->algo));
         $link = html_writer::link($actionurl, get_string('tableforcechange', 'tool_hashlegacy'));
         $displayname = \tool_hashlegacy\local\hash_manager::ALGORITHMS[$type->algo]['displayname'];
-
+        $format = get_string('strftimedatetimeshort', 'langconfig');
         $row = array(
             $displayname,
             $type->cnt,
-            userdate($type->lastdate),
-            userdate($type->firstdate),
+            userdate($type->firstdate, $format),
+            userdate($type->lastdate, $format),
             $link,
         );
         $table->data[] = $row;

@@ -28,6 +28,8 @@ $string['tablealgorithm'] = 'Algorithm';
 $string['tableforcechange'] = 'Bulk action';
 $string['recentlogin'] = 'Most recent login';
 $string['oldestlogin'] = 'Oldest login';
+$string['clearhashes'] = 'Delete Password Hashes';
+$string['deletehashcheck'] = 'Are you sure you want to delete stored password hashes for the selected users?';
 
 // Privacy null provider.
 $string['privacy:metadata'] = 'The Legacy password hash tool does not store any user data.';
