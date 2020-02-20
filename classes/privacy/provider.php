@@ -23,7 +23,6 @@
  */
 
 namespace tool_hashlegacy\privacy;
-defined('MOODLE_INTERNAL') || die;
 
 class provider implements
     // This plugin does not store any personal user data.
