@@ -49,6 +49,7 @@ function generate_table() {
         get_string('count', 'tag'),
         get_string('oldestlogin', 'tool_hashlegacy'),
         get_string('recentlogin', 'tool_hashlegacy'),
+        get_string('recentlogin', 'tool_hashlegacy'),
         get_string('action')
     );
 
@@ -86,12 +87,13 @@ function generate_table() {
         $actionurl = new moodle_url('/admin/tool/hashlegacy/index.php', array('reset' => $type->algo));
         $link = html_writer::link($actionurl, get_string('tableforcechange', 'tool_hashlegacy'));
         $displayname = \tool_hashlegacy\local\hash_manager::ALGORITHMS[$type->algo]['displayname'];
-        $format = get_string('strftimedatetimeshort', 'langconfig');
+        $format = get_string('strftimedatetime', 'langconfig');
         $row = array(
             $displayname,
-            $type->cnt,
+            format_float($type->cnt, 0),
             userdate($type->firstdate, $format),
             userdate($type->lastdate, $format),
+            format_time(time() - $type->lastdate),
             $link,
         );
         $table->data[] = $row;

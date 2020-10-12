@@ -114,10 +114,8 @@ class hash_manager {
 
         // Store in session then redirect to the bulk action.
         $SESSION->bulk_users = $users;
-        $bulkurl = new \moodle_url('/admin/user/user_bulk.php',
-            array ('sesskey' => sesskey()));
 
-        redirect($bulkurl);
+        redirect('/admin/user/user_bulk.php');
     }
 
     public static function generate_user_list($algomatch) {
