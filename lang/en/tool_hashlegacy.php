@@ -31,5 +31,12 @@ $string['oldestlogin'] = 'Oldest login';
 $string['clearhashes'] = 'Delete Password Hashes';
 $string['deletehashcheck'] = 'Are you sure you want to delete stored password hashes for the selected users?';
 
+// Check API Strings.
+$string['hashlegacycheckname'] = 'Legacy password hashes';
+$string['hashlegacychecklink'] = 'Legacy hash report';
+$string['hashlegacycheck_details'] = 'Users whose hashes are old can potentially be cracked in the case of a database breach or dump.';
+$string['securitycheck_problem'] = 'More than {$a}% of stored hashes are old. These can be manually reset, or the users messaged, through the plugin report.';
+$string['securitycheck_ok'] = 'Less than {$a}% of users are on an old hash.';
+
 // Privacy null provider.
 $string['privacy:metadata'] = 'The Legacy password hash tool does not store any user data.';

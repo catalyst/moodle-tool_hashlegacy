@@ -30,3 +30,13 @@ function tool_hashlegacy_bulk_user_actions() {
     );
     return [$clearhashes];
 }
+
+function tool_hashlegacy_security_checks() {
+    if (class_exists('\core\check\check') && class_exists('\core\check\result')) {
+        return [
+            new \tool_hashlegacy\check\hashlegacy()
+        ];
+    } else {
+        return [];
+    }
+}
